@@ -9,6 +9,7 @@
   };
   outputs = inputs: inputs.blueprint {
     inherit inputs;
+    prefix = "./nix";
     nixpkgs.overlays = [
       inputs.nix-ros-overlay.overlays.default
     ];
