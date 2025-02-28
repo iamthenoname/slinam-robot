@@ -57,11 +57,46 @@
   }
 #elif defined(L298_MOTOR_DRIVER)
   void initMotorController() {
-    digitalWrite(RIGHT_MOTOR_ENABLE, HIGH);
-    digitalWrite(LEFT_MOTOR_ENABLE, HIGH);
+    // digitalWrite(RIGHT_MOTOR_ENABLE, HIGH);
+    // digitalWrite(LEFT_MOTOR_ENABLE, HIGH);
+    pinMode(MOTOR_A_PINA, OUTPUT);
+    pinMode(MOTOR_A_PINB, OUTPUT);
+
+    pinMode(MOTOR_B_PINA, OUTPUT);
+    pinMode(MOTOR_B_PINB, OUTPUT);
   }
   
   void setMotorSpeed(int i, int spd) {
+    if (i == LEFT) {
+      analogWrite(MOTOR_A_PWM, spd);
+      if (spd < 0) {
+        digitalWrite(MOTOR_A_PINA, LOW);
+        digitalWrite(MOTOR_A_PINB, HIGH);
+        // ANTI-CLOCKWISE - (positive angles are anti-clockwise)
+      } else if (spd > 0) {
+        digitalWrite(MOTOR_A_PINA, HIGH);
+        digitalWrite(MOTOR_A_PINB, LOW);
+      } else { // 0 speed
+        digitalWrite(MOTOR_A_PINA, LOW);
+        digitalWrite(MOTOR_A_PINB, LOW);
+      }
+    } else if (i == RIGHT) {
+      analogWrite(MOTOR_B_PWM, spd);
+      if (spd < 0) {
+        digitalWrite(MOTOR_B_PINA, HIGH);
+        digitalWrite(MOTOR_B_PINB, LOW);
+        // ANTI-CLOCKWISE - (positive angles are anti-clockwise)
+      } else if (spd > 0) {
+        digitalWrite(MOTOR_B_PINA, LOW);
+        digitalWrite(MOTOR_B_PINB, HIGH);
+      } else { // 0 speed
+        digitalWrite(MOTOR_B_PINA, LOW);
+        digitalWrite(MOTOR_B_PINB, LOW);
+      }
+    } else {
+      Serial.println("what the fuck is happening");
+    }
+
     unsigned char reverse = 0;
   
     if (spd < 0)
@@ -72,14 +107,14 @@
     if (spd > 255)
       spd = 255;
     
-    if (i == LEFT) { 
-      if      (reverse == 0) { analogWrite(LEFT_MOTOR_FORWARD, spd); analogWrite(LEFT_MOTOR_BACKWARD, 0); }
-      else if (reverse == 1) { analogWrite(LEFT_MOTOR_BACKWARD, spd); analogWrite(LEFT_MOTOR_FORWARD, 0); }
-    }
-    else /*if (i == RIGHT) //no need for condition*/ {
-      if      (reverse == 0) { analogWrite(RIGHT_MOTOR_FORWARD, spd); analogWrite(RIGHT_MOTOR_BACKWARD, 0); }
-      else if (reverse == 1) { analogWrite(RIGHT_MOTOR_BACKWARD, spd); analogWrite(RIGHT_MOTOR_FORWARD, 0); }
-    }
+    // if (i == LEFT) { 
+    //   if      (reverse == 0) { analogWrite(LEFT_MOTOR_FORWARD, spd); analogWrite(LEFT_MOTOR_BACKWARD, 0); }
+    //   else if (reverse == 1) { analogWrite(LEFT_MOTOR_BACKWARD, spd); analogWrite(LEFT_MOTOR_FORWARD, 0); }
+    // }
+    // else /*if (i == RIGHT) //no need for condition*/ {
+    //   if      (reverse == 0) { analogWrite(RIGHT_MOTOR_FORWARD, spd); analogWrite(RIGHT_MOTOR_BACKWARD, 0); }
+    //   else if (reverse == 1) { analogWrite(RIGHT_MOTOR_BACKWARD, spd); analogWrite(RIGHT_MOTOR_FORWARD, 0); }
+    // }
 
     #ifdef ARDUINO_ENC_COUNTER
       if (i == LEFT) {

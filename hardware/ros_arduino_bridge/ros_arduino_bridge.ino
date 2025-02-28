@@ -235,10 +235,31 @@ int runCommand() {
        i++;
     }
     Kp = pid_args[0];
-    Kd = pid_args[1];
-    Ki = pid_args[2];
+    Ki = pid_args[1];
+    Kd = pid_args[2];
     Ko = pid_args[3];
     Serial.println("OK");
+    break;
+  case READ_PID:
+    char dbg_out[128] = { 0 };
+
+    SetPointInfo* cur_wheel = { 0 };
+    if (argv1[0] == 'L')  cur_wheel = &leftPID;
+    else if (argv1[0] == 'R') cur_wheel = &rightPID;
+    else {
+      Serial.println("Invalid Wheel");
+      break;
+    }
+
+    // sprintf(dbg_out, "%d,%d,%d,%d,%d,%d,%d,%d,%d",
+    //         (int)cur_wheel->TargetTicksPerFrame, (int)cur_wheel->Encoder, (int)cur_wheel->funnyPrevEnc,
+    //         cur_wheel->PrevInput, cur_wheel->ITerm, (int)cur_wheel->output,
+    //         Kp, Ki, Kd);
+    sprintf(dbg_out, "%d,%d,%d,%d,%d,%d,%d,%d",
+            (int)cur_wheel->TargetTicksPerFrame, (int)cur_wheel->Encoder - (int)cur_wheel->funnyPrevEnc,
+            cur_wheel->PrevInput, (int)cur_wheel->output / (int)Ko,
+            Kp, Ki, Kd, Ko);
+    Serial.println(dbg_out);
     break;
 #endif
   default:

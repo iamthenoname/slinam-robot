@@ -10,6 +10,7 @@ typedef struct {
   double TargetTicksPerFrame;    // target speed in ticks per frame
   long Encoder;                  // encoder count
   long PrevEnc;                  // last encoder count
+  long funnyPrevEnc;             // just debugging something
 
   /*
   * Using previous input (PrevInput) instead of PrevError to avoid derivative kick,
@@ -27,6 +28,7 @@ typedef struct {
   int ITerm;                    //integrated term
 
   long output;                    // last motor setting
+  long funnyOutput;
 }
 SetPointInfo;
 
@@ -34,8 +36,8 @@ SetPointInfo leftPID, rightPID;
 
 /* PID Parameters */
 int Kp = 20;
-int Kd = 12;
 int Ki = 0;
+int Kd = 12;
 int Ko = 50;
 
 unsigned char moving = 0; // is the base in motion?
@@ -73,6 +75,7 @@ void doPID(SetPointInfo * p) {
   //Perror = p->TargetTicksPerFrame - (p->Encoder - p->PrevEnc);
   input = p->Encoder - p->PrevEnc;
   Perror = p->TargetTicksPerFrame - input;
+  p->funnyPrevEnc = p->PrevEnc;
 
 
   /*
@@ -83,6 +86,7 @@ void doPID(SetPointInfo * p) {
   //output = (Kp * Perror + Kd * (Perror - p->PrevErr) + Ki * p->Ierror) / Ko;
   // p->PrevErr = Perror;
   output = (Kp * Perror - Kd * (input - p->PrevInput) + p->ITerm) / Ko;
+  p->funnyOutput = output;
   p->PrevEnc = p->Encoder;
 
   output += p->output;
