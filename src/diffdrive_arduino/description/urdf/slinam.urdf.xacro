@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!-- Basic differential drive mobile base -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="diffdrive_robot">
+  <xacro:include filename="$(find diffdrive_arduino)/urdf/slinam_core.xacro">
+
+  <!-- Import diffbot ros2_control description -->
+  <xacro:include filename="$(find diffdrive_arduino)/ros2_control/diffbot.ros2_control.xacro" />
+
+  <xacro:diffbot_ros2_control
+    name="SLINAM" prefix="slinam" />
+
+</robot>
